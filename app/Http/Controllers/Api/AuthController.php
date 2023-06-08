@@ -12,13 +12,43 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use App\Policies\UserPolicy;
 
+use function PHPUnit\Framework\isEmpty;
+use function PHPUnit\Framework\isNull;
 
 class AuthController extends Controller
 {
     public function store(LoginRequest $request, AuthServices $authService)
     {
+
+        // return response()->json(request()->query());
+
+        // if (Gate::allows('login', $authService)) {
+        //     return response()->json(['error' => 'Already authenticated.'], 403);
+        // }
+        // $user = $authService->getUser();
+        // if (!$user) return response()->noContent(401);
+        // return response()->json($user);
+        // return response()->json($authService->getUser());
+
+
+        // if (Gate::denies('login', $authService->getUser())) {
+        //     return response()->json(['error' => 'Already authenticated.'], 403);
+        // }
+
+        // if ($authService->getUser())  $user = $authService->getUser();
+        // return  response()->json($authService->getUser() ? false : true);
+
+        // if (Gate::allows('create-token')) {
+        //     return response()->json(['error' => 'Already authenticated.'], 403);
+        // }
+
+
+
+        // return response()->json('ok');
         $credentials = (['email' => $request->email, 'password' => $request->password]);
         if (auth()->guard('token')->attempt($credentials)) {
             $authService->createAccessToken();
@@ -45,17 +75,16 @@ class AuthController extends Controller
     public function verify(Request $request, TokenUserProvider $userProvider,  AuthServices $authService)
     {
 
-        $token = $authService->getRequestToken();
-        $user = $userProvider->retrieveByToken([], $token);
+        // $token = $authService->getRequestToken();
+        // $user = $userProvider->retrieveByToken([], $token);
+        $user = $authService->getUser();
         User::where('email', $user->email)->update(['is_verified' => $request->value]);
         return response()->noContent();
     }
 
-    public function me(TokenUserProvider $userProvider, AuthServices $authService)
+    public function me(AuthServices $authService)
     {
-        $token = $authService->getRequestToken();
-
-        $user = $userProvider->retrieveByToken([], $token);
+        $user = $authService->getUser();
         if (!$user) return response()->noContent(401);
         return response()->json($user);
     }

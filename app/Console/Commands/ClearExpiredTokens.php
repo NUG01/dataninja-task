@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\UserToken;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class ClearExpiredTokens extends Command
@@ -28,7 +30,7 @@ class ClearExpiredTokens extends Command
     public function handle()
     {
 
-        // $expiredTokens = AccessToken::where('expires_at', '<', Carbon::now())->delete();
-        // $this->info("Deleted {$expiredTokens} expired tokens.");
+        UserToken::where('expires_at', '<', Carbon::now())->delete();
+        $this->info("Deleted expired tokens.");
     }
 }

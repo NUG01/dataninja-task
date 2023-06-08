@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\Models\User;
+use App\Services\AuthServices;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -13,11 +14,13 @@ use Illuminate\Support\Str;
 
 class TokenGuard implements Guard
 {
-  protected $userProvider;
+
+  protected $authService;
   protected $request;
 
   public function __construct(UserProvider $userProvider, $request)
   {
+
     $this->userProvider = $userProvider;
     $this->request = $request;
   }

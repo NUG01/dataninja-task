@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Auth\TokenUserProvider;
 use App\Models\UserToken;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -9,6 +10,7 @@ use Illuminate\Support\Str;
 
 class AuthServices
 {
+
   public static function createAccessToken()
   {
     $token = UserToken::create([
@@ -40,5 +42,13 @@ class AuthServices
     $token = request()->has('access_token') ? request('access_token') : $bearerToken;
 
     return $token;
+  }
+
+  public static function getUser()
+  {
+
+    $token = (new AuthServices())->getRequestToken();
+    $user = (new TokenUserProvider())->retrieveByToken([], $token);
+    return $user;
   }
 }
