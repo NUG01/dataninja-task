@@ -75,16 +75,14 @@ class AuthController extends Controller
     public function verify(Request $request, TokenUserProvider $userProvider,  AuthServices $authService)
     {
 
-        // $token = $authService->getRequestToken();
-        // $user = $userProvider->retrieveByToken([], $token);
-        $user = $authService->getUser();
+        $user = auth()->guard('token')->user();
         User::where('email', $user->email)->update(['is_verified' => $request->value]);
         return response()->noContent();
     }
 
-    public function me(AuthServices $authService)
+    public function me()
     {
-        $user = $authService->getUser();
+        $user = auth()->guard('token')->user();
         if (!$user) return response()->noContent(401);
         return response()->json($user);
     }

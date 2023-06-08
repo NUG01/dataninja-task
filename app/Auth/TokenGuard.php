@@ -58,8 +58,9 @@ class TokenGuard implements Guard
   public function user()
   {
 
-
-    return auth()->user();
+    $authService = new AuthServices();
+    $user = $authService->getUser();
+    return $user;
     // Get the currently authenticated user
   }
 

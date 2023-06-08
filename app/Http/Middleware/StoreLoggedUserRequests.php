@@ -21,8 +21,7 @@ class StoreLoggedUserRequests
 
     public function handle(Request $request, Closure $next)
     {
-        $authService = new AuthServices();
-        $user = $authService->getUser();
+        $user = auth()->guard('token')->user();
         if ($user) {
             UserRequestLog::create([
                 'user_id' => $user->id,

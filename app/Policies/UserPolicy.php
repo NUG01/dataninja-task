@@ -22,7 +22,7 @@ class UserPolicy
     public function create(User $user, AuthServices $authService): bool
     {
 
-        return  false;
+        return  true;
         return  $authService->getUser() ? false : true;
     }
 }
