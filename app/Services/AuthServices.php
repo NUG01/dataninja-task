@@ -22,9 +22,9 @@ class AuthServices
   }
 
 
-  public static function destroyAccessToken()
+  public static function destroyAccessToken($token)
   {
-    UserToken::where('access_token', self::getRequestToken())->delete();
+    UserToken::where('access_token', $token)->delete();
     return;
   }
 

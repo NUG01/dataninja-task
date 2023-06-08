@@ -22,9 +22,11 @@ class AuthController extends Controller
     public function store(LoginRequest $request, AuthServices $authService)
     {
 
-        if (Gate::allows('verified-user')) {
+        $user = User::where('email', request()->input('email'))->first();
+        if ($user->cannot('login')) {
             return response()->json(['error' => 'Not verified!'], 403);
         }
+
 
         $credentials = (['email' => $request->email, 'password' => $request->password]);
         if (auth()->guard('token')->attempt($credentials)) {
@@ -37,13 +39,18 @@ class AuthController extends Controller
         return response()->json(['token' => UserToken::where('user_id', $userId)->first()['access_token']]);
     }
 
-    public function destroy(Request $request, AuthServices $authService)
+    public function destroy(AuthServices $authService)
     {
-        if (Gate::allows('owner-user')) {
-            return response()->json(['error' => 'Not an owner.'], 403);
+
+        $token =  UserToken::where('access_token', $authService->getRequestToken())->first();
+
+        if (!$token) return response()->json(['error' => 'Firstly login to logout'], 403);
+
+        if ($token->access_token && $token->user->cannot('logout')) {
+            return response()->json(['error' => 'Not an owner!'], 403);
         }
 
-        $authService->destroyAccessToken();
+        $authService->destroyAccessToken($token->access_token);
         return response()->noContent();
     }
 

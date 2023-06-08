@@ -37,4 +37,8 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [];
+
+    protected $policies = [
+        User::class => UserPolicy::class,
+    ];
 }
