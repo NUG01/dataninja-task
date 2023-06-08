@@ -26,8 +26,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'Not verified.'], 403);
         }
 
-
-
         $credentials = (['email' => $request->email, 'password' => $request->password]);
         if (auth()->guard('token')->attempt($credentials)) {
             $authService->createAccessToken();
