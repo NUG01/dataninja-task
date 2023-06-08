@@ -19,15 +19,15 @@ class UserPolicy
      */
 
 
-    public function checkVerificationStatus(): bool
+    public function create(): bool
     {
-
-        return auth()->guard('token')->user()->is_verified ? true : false;
+        $user = User::where('email', request()->input('email'))->first();
+        return $user->is_verified == 1;
     }
 
-    public function checkOwnerStatus(): bool
+    public function delete(AuthServices $authService): bool
     {
-
-        return auth()->guard('token')->user() ? true : false;
+        $token = UserToken::where('access_token', $authService->getRequestToken())->first();
+        return auth()->guard('token')->user()->id == $token->user->id ? true : false;
     }
 }

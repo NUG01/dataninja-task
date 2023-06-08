@@ -11,10 +11,10 @@ use Illuminate\Support\Str;
 class AuthServices
 {
 
-  public static function createAccessToken()
+  public static function createAccessToken($userId)
   {
     $token = UserToken::create([
-      'user_id' => auth()->user()->id,
+      'user_id' => $userId,
       'access_token' => Str::random(32),
       'expires_at' => now()->subDays(30),
     ]);
@@ -22,17 +22,10 @@ class AuthServices
   }
 
 
-  public static function destroyAccessToken($request)
+  public static function destroyAccessToken()
   {
-    UserToken::where('access_token', $request->token)->delete();
+    UserToken::where('access_token', self::getRequestToken())->delete();
     return;
-  }
-
-
-  public static function getAccessToken()
-  {
-    $token = UserToken::where('user_id',  auth()->user()->id)->first();
-    return $token;
   }
 
 
@@ -47,7 +40,7 @@ class AuthServices
   public static function getUser()
   {
 
-    $token = (new AuthServices())->getRequestToken();
+    $token = self::getRequestToken();
     $user = (new TokenUserProvider())->retrieveByToken([], $token);
     return $user;
   }

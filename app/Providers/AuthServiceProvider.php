@@ -36,8 +36,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('verified-user', [PostPolicy::class, 'checkVerificationStatus']);
-        Gate::define('owner-user', [PostPolicy::class, 'checkOwnerStatus']);
+        Gate::define('verified-user', [UserPolicy::class, 'create']);
+        Gate::define('owner-user', [UserPolicy::class, 'delete']);
 
         Auth::extend('token', function ($app, $name, array $config) {
             return new TokenGuard(Auth::createUserProvider($config['provider']), $app['request']);

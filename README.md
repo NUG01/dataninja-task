@@ -38,14 +38,18 @@ php artisan config:cache
   php artisan key:generate
 ```
 
-Which generates auth key.
-
-7\. Also execute the following command:
+7\. Also execute the following commands:
 
 ```sh
   php artisan migrate
   &&
   php artisan db:seed
+```
+
+8\. Also you can use this command to delete expired tokens from DB
+
+```sh
+  php artisan tokens:clear-expired
 ```
 
 ##### Now, you should be good to go with!

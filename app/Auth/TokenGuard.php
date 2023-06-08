@@ -40,7 +40,6 @@ class TokenGuard implements Guard
     if (!$user) return false;
 
     if (Hash::check($credentials['password'], $user->password)) {
-      $this->setUser($user);
       return $user;
     }
   }
@@ -76,7 +75,8 @@ class TokenGuard implements Guard
 
   public function setUser(Authenticatable $user)
   {
-    return auth()->login($user);
+    //
+    // return auth()->login($user);
   }
   public function hasUser()
   {
