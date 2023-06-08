@@ -19,10 +19,15 @@ class UserPolicy
      */
 
 
-    public function create(User $user, AuthServices $authService): bool
+    public function checkVerificationStatus(): bool
     {
 
-        return  true;
-        return  $authService->getUser() ? false : true;
+        return auth()->guard('token')->user()->is_verified ? true : false;
+    }
+
+    public function checkOwnerStatus(): bool
+    {
+
+        return auth()->guard('token')->user() ? true : false;
     }
 }
